@@ -1466,6 +1466,242 @@ function ActivityRow({ who, time, action, type, index }) {
   );
 }
 
+function ReferralGraphic() {
+  const dots = [
+    { top: 6, left: 18, c: 1 },
+    { top: 24, left: 142, c: 0 },
+    { top: 52, left: 6, c: 1 },
+    { top: 70, left: 150, c: 0 },
+    { top: 96, left: 16, c: 0 },
+    { top: 118, left: 132, c: 1 },
+  ];
+  return (
+    <div
+      style={{
+        width: 170,
+        height: 140,
+        position: "relative",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexShrink: 0,
+      }}
+    >
+      {dots.map((p, i) => (
+        <span
+          key={i}
+          style={{
+            position: "absolute",
+            top: p.top,
+            left: p.left,
+            width: 3,
+            height: 3,
+            background: p.c === 0 ? C.warn : C.accent,
+            borderRadius: 999,
+            opacity: 0.75,
+            boxShadow: `0 0 6px ${p.c === 0 ? C.warn : C.accent}`,
+          }}
+        />
+      ))}
+      <div style={{ position: "relative", width: 92, height: 112 }}>
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "rgba(247,224,138,0.10)",
+            border: `1px solid rgba(247,224,138,0.45)`,
+            transform: "rotate(-14deg) translate(-14px, 10px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            ...MONO,
+            fontSize: 14,
+            color: C.warn,
+            letterSpacing: "0.06em",
+            opacity: 0.75,
+          }}
+        >
+          +50
+        </div>
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "rgba(255,120,73,0.15)",
+            border: `1px solid ${C.accentSoft}`,
+            transform: "rotate(7deg) translate(10px, 4px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            ...MONO,
+            fontSize: 15,
+            color: C.accent,
+            letterSpacing: "0.06em",
+          }}
+        >
+          +50
+        </div>
+        <div
+          className="mjn-fill-amber"
+          style={{
+            position: "absolute",
+            inset: 0,
+            transform: "rotate(-3deg)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 3,
+            border: "1.5px solid",
+            boxShadow: `0 0 32px rgba(247,224,138,0.45), inset 0 0 16px rgba(255,255,255,0.12)`,
+          }}
+        >
+          <span style={{ ...MONO, fontSize: 9, letterSpacing: "0.3em", fontWeight: 600, opacity: 0.65 }}>BONUS</span>
+          <span style={{ ...MONO, fontSize: 30, fontWeight: 700, letterSpacing: "0.01em", lineHeight: 1 }}>+50</span>
+          <span style={{ ...MONO, fontSize: 8, letterSpacing: "0.24em", fontWeight: 600, opacity: 0.65 }}>TICKETS</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ReferralCard() {
+  const [copied, setCopied] = useState(false);
+  const link = "mujin.app/r/0x89A-4fE1";
+
+  const copyLink = () => {
+    try {
+      navigator.clipboard?.writeText(`https://${link}`);
+    } catch {}
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div
+      className="mjn-fade-in"
+      style={{
+        position: "relative",
+        marginBottom: 32,
+        background:
+          "linear-gradient(135deg, rgba(255,120,73,0.12) 0%, rgba(247,224,138,0.05) 50%, rgba(255,120,73,0.10) 100%)",
+        border: `1px solid rgba(255,120,73,0.32)`,
+        overflow: "hidden",
+        boxShadow: "0 0 50px rgba(255,120,73,0.08)",
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 1,
+          background: `linear-gradient(90deg, transparent, ${C.accent}, ${C.warn}, ${C.accent}, transparent)`,
+          opacity: 0.75,
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          backgroundImage: `linear-gradient(rgba(236,235,231,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(236,235,231,0.02) 1px, transparent 1px)`,
+          backgroundSize: "22px 22px",
+          opacity: 0.5,
+          pointerEvents: "none",
+        }}
+      />
+      <div
+        style={{
+          position: "relative",
+          display: "grid",
+          gridTemplateColumns: "1fr auto",
+          gap: 32,
+          padding: "28px 32px",
+          alignItems: "center",
+        }}
+      >
+        <div style={{ minWidth: 0 }}>
+          <div
+            style={{
+              ...MONO,
+              fontSize: 10,
+              color: C.warn,
+              letterSpacing: "0.26em",
+              textTransform: "uppercase",
+              marginBottom: 16,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "5px 10px",
+              border: `1px solid rgba(247,224,138,0.4)`,
+              background: "rgba(247,224,138,0.06)",
+            }}
+          >
+            <TicketIcon size={11} />
+            Refer &amp; earn
+          </div>
+          <h3
+            style={{
+              ...MONO,
+              fontSize: 24,
+              fontWeight: 500,
+              color: C.text,
+              margin: "0 0 10px",
+              letterSpacing: "0.02em",
+              lineHeight: 1.3,
+            }}
+          >
+            Earn{" "}
+            <span
+              style={{
+                color: C.warn,
+                textShadow: "0 0 22px rgba(247,224,138,0.5)",
+              }}
+            >
+              50 raffle tickets
+            </span>{" "}
+            per friend you invite
+          </h3>
+          <div
+            style={{
+              ...MONO,
+              fontSize: 12,
+              color: C.muted,
+              letterSpacing: "0.02em",
+              lineHeight: 1.7,
+              marginBottom: 22,
+              maxWidth: 540,
+            }}
+          >
+            Share your referral link. When a friend creates an account with their Sui wallet, you stack 50 tickets toward the next monthly raffle draw.
+          </div>
+          <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+            <Btn primary onClick={copyLink}>
+              {copied ? "✓ Link copied" : "↗ Copy referral link"}
+            </Btn>
+            <div
+              style={{
+                ...MONO,
+                fontSize: 11,
+                color: C.muted,
+                letterSpacing: "0.04em",
+                padding: "9px 12px",
+                border: `1px solid ${C.border}`,
+                background: "rgba(5,4,3,0.35)",
+                userSelect: "all",
+              }}
+            >
+              {link}
+            </div>
+          </div>
+        </div>
+        <ReferralGraphic />
+      </div>
+    </div>
+  );
+}
+
 function Dashboard({ setScreen }) {
   const [filter, setFilter] = useState("all");
   const [range, setRange] = useState("30d");
@@ -1510,6 +1746,8 @@ function Dashboard({ setScreen }) {
           <StatCard index={2} label="Active duels" value={activeDuels} sub="in progress" spark={[0, 1, 1, 0, 1, 2, 2, 1, 2, 2, 2]} sparkColor={C.accent} accent />
           <StatCard index={3} label="Win rate" value={winRate} sub="%" spark={[40, 50, 55, 60, 58, 65, 68, 70, 72, 72]} sparkColor={C.good} />
         </div>
+
+        <ReferralCard />
 
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
           <Label>My pools · {filtered.length}</Label>
@@ -5471,197 +5709,4 @@ export default function MujinApp() {
   useEffect(() => {
     if (!activeDuel) return;
     const nextPending = activeDuel.players.find((p) => !p.accepted);
-    if (!nextPending) return;
-    const t = setTimeout(() => {
-      setActiveDuel((d) => {
-        if (!d) return d;
-        return {
-          ...d,
-          players: d.players.map((p) => (p.id === nextPending.id ? { ...p, accepted: true } : p)),
-        };
-      });
-    }, 2400);
-    return () => clearTimeout(t);
-  }, [activeDuel]);
-
-  return (
-    <div
-      style={{
-        backgroundColor: C.bg,
-        color: C.text,
-        minHeight: "100vh",
-        ...MONO,
-      }}
-    >
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap');
-        @keyframes mjnFade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes mjnBar { from { width: 0; } }
-        @keyframes mjnPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        @keyframes mjnDraw { to { stroke-dashoffset: 0; } }
-        @keyframes mjnPop { 0% { transform: scale(0); opacity: 0; } 60% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
-        @keyframes mjnTick { to { stroke-dashoffset: 0; } }
-        @keyframes mjnFlip { 0% { transform: rotateY(90deg) scale(0.92); opacity: 0; } 100% { transform: rotateY(0) scale(1); opacity: 1; } }
-        @keyframes mjnSpin { 0% { transform: rotate(0); } 100% { transform: rotate(360deg); } }
-        @keyframes mjnTickPop { 0% { transform: scale(0); } 60% { transform: scale(1.18); } 100% { transform: scale(1); } }
-        @keyframes mjnScanH { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-        @keyframes mjnRaffleReady {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(247,224,138,0.4); }
-          50% { box-shadow: 0 0 0 6px rgba(247,224,138,0); }
-        }
-        .mjn-raffle-ready { animation: mjnRaffleReady 1.6s ease-in-out infinite; }
-        .mjn-fade-in { animation: mjnFade .4s cubic-bezier(.2,.7,.2,1) both; }
-        .mjn-bar { animation: mjnBar 1s cubic-bezier(.2,.7,.2,1); }
-        .mjn-pulse { animation: mjnPulse 2.4s ease-in-out infinite; }
-        ::selection { background: ${C.accent}; color: ${C.bg}; }
-        input::placeholder { color: ${C.dim}; letter-spacing: 0.02em; }
-        * { box-sizing: border-box; }
-        button {
-          appearance: none;
-          -webkit-appearance: none;
-          -moz-appearance: none;
-          font-family: inherit;
-          border-radius: 0;
-          color-scheme: light;
-        }
-        input[type="range"] {
-          appearance: none;
-          -webkit-appearance: none;
-          height: 6px;
-          outline: none;
-          border-radius: 999px;
-          padding: 0;
-          margin: 0;
-        }
-        input[type="range"]::-webkit-slider-runnable-track {
-          height: 6px;
-          border-radius: 999px;
-          background: transparent;
-        }
-        input[type="range"]::-moz-range-track {
-          height: 6px;
-          border-radius: 999px;
-          background: transparent;
-        }
-        input[type="range"]::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          appearance: none;
-          width: 16px;
-          height: 16px;
-          border-radius: 50%;
-          background: #ff7849;
-          border: 2px solid #131211;
-          cursor: pointer;
-          box-shadow: 0 0 10px rgba(255,120,73,0.5);
-          margin-top: -5px;
-        }
-        input[type="range"]::-moz-range-thumb {
-          width: 14px;
-          height: 14px;
-          border-radius: 50%;
-          background: #ff7849;
-          border: 2px solid #131211;
-          cursor: pointer;
-          box-shadow: 0 0 10px rgba(255,120,73,0.5);
-        }
-        input[type="number"] {
-          color-scheme: dark;
-        }
-        .mjn-fill-amber {
-          background: #f7e08a !important;
-          background-color: #f7e08a !important;
-          color: #131211 !important;
-          border-color: #f7e08a !important;
-        }
-        .mjn-fill-amber:hover { opacity: 0.92; }
-        .mjn-fill-coral {
-          background: #ff7849 !important;
-          background-color: #ff7849 !important;
-          color: #131211 !important;
-          border-color: #ff7849 !important;
-        }
-        .mjn-fill-coral:hover { opacity: 0.92; }
-        .mjn-circle-amber {
-          width: 88px;
-          height: 88px;
-          background: #f7e08a !important;
-          background-color: #f7e08a !important;
-          border-radius: 50%;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 0 40px rgba(247,224,138,0.5);
-          color: #131211;
-        }
-        .mjn-tick {
-          color: #131211;
-          font-size: 44px;
-          line-height: 1;
-          font-weight: 700;
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-        }
-      `}</style>
-
-      <TopNav
-        screen={screen}
-        setScreen={setScreen}
-        badges={badges}
-        mujinTokens={mujinTokens}
-        raffleTickets={raffleTickets}
-        totalRaffleTickets={totalRaffleTickets}
-        raffleSeconds={raffleSeconds}
-        raffleDrawn={raffleDrawn}
-      />
-
-      <div
-        style={{
-          maxWidth: 1280,
-          margin: "0 auto",
-          minHeight: "calc(100vh - 64px)",
-          borderLeft: `1px solid ${C.border}`,
-          borderRight: `1px solid ${C.border}`,
-          position: "relative",
-        }}
-      >
-        {screen === "dashboard" && <Dashboard setScreen={setScreen} />}
-        {screen === "pool" && (
-          <PoolDetail
-            setScreen={setScreen}
-            activeDuel={activeDuel}
-            setActiveDuel={setActiveDuel}
-            poolTotal={poolTotal}
-            setPoolTotal={setPoolTotal}
-            addRaffleTickets={addRaffleTickets}
-          />
-        )}
-        {screen === "duel" && <DuelSetup setScreen={setScreen} setActiveDuel={setActiveDuel} />}
-        {screen === "duel-sent" && <DuelSent setScreen={setScreen} />}
-        {screen === "duel-play" && activeDuel && (
-          <DuelPlay duel={activeDuel} setScreen={setScreen} setDuelResult={setDuelResult} />
-        )}
-        {screen === "duel-result" && activeDuel && (
-          <DuelResult
-            duel={activeDuel}
-            duelResult={duelResult}
-            setScreen={setScreen}
-            finishDuel={finishDuel}
-            badges={badges}
-            awardBadge={awardBadge}
-            poolTotal={poolTotal}
-          />
-        )}
-        {screen === "create" && <CreatePool setScreen={setScreen} />}
-        {screen === "settings" && <Settings setScreen={setScreen} />}
-        {screen === "raffle-draw" && (
-          <RaffleDraw
-            setScreen={(s) => {
-              finishRaffle();
-              setScreen(s);
-            }}
-            totalTickets={totalRaffleTickets}
-          />
-        )}
-      </div>
-    </div>
-  );
-}
+    if (!nextP
