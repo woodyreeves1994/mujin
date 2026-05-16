@@ -448,7 +448,7 @@ function WalletPanel({ setScreen, onClose }) {
         <MenuItem
           danger
           onClick={() => {
-            setScreen("dashboard");
+            setScreen("disconnect");
             onClose?.();
           }}
         >
@@ -1150,50 +1150,60 @@ function TopNav({ screen, setScreen, badges, mujinTokens, raffleTickets, totalRa
           </div>
 
           <div data-dropdown style={{ position: "relative" }} onClick={(e) => e.stopPropagation()}>
-            <button
-              onClick={() => setOpenMenu(openMenu === "raffle" ? null : "raffle")}
-              className={raffleReady ? "mjn-raffle-ready" : ""}
-              style={{
-                ...MONO,
-                display: "flex",
-                alignItems: "center",
-                gap: 7,
-                height: 32,
-                padding: "0 10px",
-                background: raffleReady
-                  ? "rgba(247,224,138,0.1)"
-                  : openMenu === "raffle"
-                  ? C.panelHi
-                  : "transparent",
-                border: `1px solid ${
-                  raffleReady ? C.warn : openMenu === "raffle" ? C.borderHi : raffleUrgent ? "rgba(247,224,138,0.4)" : C.border
-                }`,
-                color: raffleReady ? C.warn : openMenu === "raffle" ? C.text : C.muted,
-                cursor: "pointer",
-                fontSize: 11,
-                letterSpacing: "0.05em",
-                transition: "all .15s",
-              }}
-              onMouseEnter={(e) => {
-                if (!raffleReady) e.currentTarget.style.color = C.text;
-              }}
-              onMouseLeave={(e) => {
-                if (!raffleReady) e.currentTarget.style.color = openMenu === "raffle" ? C.text : C.muted;
-              }}
-            >
-              <TicketIcon size={13} />
-              <span><Ticker value={totalRaffleTickets} /></span>
-              <span
+            {raffleReady ? (
+              <AmberBtn
+                onClick={() => setOpenMenu(openMenu === "raffle" ? null : "raffle")}
                 style={{
-                  color: raffleReady ? C.warn : raffleUrgent ? C.warn : C.dim,
-                  fontSize: 10,
-                  letterSpacing: "0.06em",
-                  fontVariantNumeric: "tabular-nums",
+                  height: 32,
+                  padding: "0 12px",
+                  fontSize: 11,
+                  letterSpacing: "0.1em",
+                  fontWeight: 700,
+                  gap: 7,
+                  boxShadow: "0 0 16px rgba(247,224,138,0.4)",
                 }}
               >
-                · {raffleReady ? "DRAW" : formatRaffleShort(raffleSeconds)}
-              </span>
-            </button>
+                <TicketIcon size={13} />
+                <Ticker value={totalRaffleTickets} />
+                <span style={{ letterSpacing: "0.08em" }}>· DRAW</span>
+              </AmberBtn>
+            ) : (
+              <button
+                onClick={() => setOpenMenu(openMenu === "raffle" ? null : "raffle")}
+                style={{
+                  ...MONO,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 7,
+                  height: 32,
+                  padding: "0 10px",
+                  background: openMenu === "raffle" ? C.panelHi : "transparent",
+                  border: `1px solid ${
+                    openMenu === "raffle" ? C.borderHi : raffleUrgent ? "rgba(247,224,138,0.4)" : C.border
+                  }`,
+                  color: openMenu === "raffle" ? C.text : C.muted,
+                  cursor: "pointer",
+                  fontSize: 11,
+                  letterSpacing: "0.05em",
+                  transition: "all .15s",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = C.text)}
+                onMouseLeave={(e) => (e.currentTarget.style.color = openMenu === "raffle" ? C.text : C.muted)}
+              >
+                <TicketIcon size={13} />
+                <span><Ticker value={totalRaffleTickets} /></span>
+                <span
+                  style={{
+                    color: raffleUrgent ? C.warn : C.dim,
+                    fontSize: 10,
+                    letterSpacing: "0.06em",
+                    fontVariantNumeric: "tabular-nums",
+                  }}
+                >
+                  · {formatRaffleShort(raffleSeconds)}
+                </span>
+              </button>
+            )}
             {openMenu === "raffle" && (
               <RafflePanel
                 tickets={raffleTickets}
@@ -1727,8 +1737,8 @@ function Dashboard({ setScreen }) {
       </PageHeader>
 
       <div style={{ padding: 32 }} className="mjn-fade-in">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-          <Label>Overview</Label>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+          <Label style={{ fontSize: 14, letterSpacing: "0.16em", color: C.text }}>Overview</Label>
           <span style={{ ...MONO, fontSize: 10, color: C.dim, letterSpacing: "0.15em" }}>
             Last 30 days
           </span>
@@ -1749,8 +1759,8 @@ function Dashboard({ setScreen }) {
 
         <ReferralCard />
 
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-          <Label>My pools · {filtered.length}</Label>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+          <Label style={{ fontSize: 14, letterSpacing: "0.16em", color: C.text }}>My pools · {filtered.length}</Label>
           <div style={{ display: "inline-flex", border: `1px solid ${C.border}`, padding: 2 }}>
             {["all", "owned", "joined"].map((t) => {
               const active = filter === t;
@@ -1801,7 +1811,7 @@ function Dashboard({ setScreen }) {
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-            <Label>Activity stream</Label>
+            <Label style={{ fontSize: 14, letterSpacing: "0.16em", color: C.text }}>Activity stream</Label>
             <div style={{ display: "flex", gap: 18 }}>
               <span style={{ ...MONO, fontSize: 10, color: C.text, letterSpacing: "0.18em", textTransform: "uppercase", borderBottom: `1px solid ${C.accent}`, paddingBottom: 4 }}>
                 All
@@ -3894,8 +3904,17 @@ function DuelPlay({ duel, setScreen, setDuelResult }) {
   };
 
   return (
-    <div className="mjn-fade-in" style={{ padding: "48px 32px 80px" }}>
-      <div style={{ maxWidth: 720, margin: "0 auto", textAlign: "center" }}>
+    <div
+      className="mjn-fade-in"
+      style={{
+        padding: "32px 32px 80px",
+        minHeight: "calc(100vh - 64px)",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+      }}
+    >
+      <div style={{ maxWidth: 720, margin: "0 auto", textAlign: "center", width: "100%" }}>
         <div style={{ display: "flex", gap: 8, justifyContent: "center", marginBottom: 36 }}>
           <Tag>Stake: {duel.stake} SUI</Tag>
           <Tag tone="accent" style={{ borderColor: C.warn, color: C.warn }}>
@@ -5610,7 +5629,7 @@ function Settings({ setScreen }) {
             </div>
           </div>
           <button
-            onClick={() => setScreen("dashboard")}
+            onClick={() => setScreen("disconnect")}
             style={{
               ...MONO,
               padding: "9px 16px",
@@ -5657,8 +5676,153 @@ function Settings({ setScreen }) {
 // ─────────────────────────────────────────────────────────────
 // Root
 
+function ConnectScreen({ onConnect }) {
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 32,
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "radial-gradient(ellipse 60% 40% at center, rgba(255,120,73,0.1) 0%, transparent 65%), radial-gradient(ellipse 50% 30% at 50% 80%, rgba(247,224,138,0.05) 0%, transparent 60%)",
+          pointerEvents: "none",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          backgroundImage: `linear-gradient(rgba(236,235,231,0.018) 1px, transparent 1px), linear-gradient(90deg, rgba(236,235,231,0.018) 1px, transparent 1px)`,
+          backgroundSize: "32px 32px",
+          opacity: 0.6,
+          pointerEvents: "none",
+        }}
+      />
+
+      <div
+        className="mjn-fade-in"
+        style={{
+          position: "relative",
+          textAlign: "center",
+          maxWidth: 460,
+          width: "100%",
+        }}
+      >
+        <div style={{ marginBottom: 28, display: "flex", justifyContent: "center" }}>
+          <div style={{ filter: "drop-shadow(0 0 30px rgba(255,120,73,0.4))" }}>
+            <MujinLogo size={88} />
+          </div>
+        </div>
+
+        <h1
+          style={{
+            ...MONO,
+            fontSize: 42,
+            fontWeight: 500,
+            color: C.text,
+            margin: "0 0 14px",
+            letterSpacing: "0.05em",
+          }}
+        >
+          Mujin
+        </h1>
+
+        <div
+          style={{
+            ...MONO,
+            fontSize: 13,
+            color: C.muted,
+            margin: "0 auto 40px",
+            letterSpacing: "0.02em",
+            lineHeight: 1.65,
+            maxWidth: 380,
+          }}
+        >
+          Save together on Sui. Pool with friends, win the monthly raffle, duel for the pot.
+        </div>
+
+        <AmberBtn onClick={onConnect} big>
+          ◆ Connect Sui wallet
+        </AmberBtn>
+
+        <div
+          style={{
+            ...MONO,
+            fontSize: 11,
+            color: C.dim,
+            marginTop: 24,
+            letterSpacing: "0.04em",
+          }}
+        >
+          New here?{" "}
+          <span
+            style={{
+              color: C.muted,
+              cursor: "pointer",
+              borderBottom: `1px solid ${C.border}`,
+              paddingBottom: 1,
+            }}
+          >
+            What is Mujin?
+          </span>
+        </div>
+
+        <div
+          style={{
+            marginTop: 64,
+            paddingTop: 28,
+            borderTop: `1px solid ${C.border}`,
+            display: "flex",
+            gap: 28,
+            justifyContent: "center",
+            flexWrap: "wrap",
+            ...MONO,
+            fontSize: 10,
+            color: C.muted,
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+          }}
+        >
+          <span><span style={{ color: C.accent, marginRight: 6 }}>◆</span>Pool savings</span>
+          <span><span style={{ color: C.warn, marginRight: 6 }}>♠</span>Friendly duels</span>
+          <span><span style={{ color: C.warn, marginRight: 6 }}>★</span>Monthly raffle</span>
+        </div>
+      </div>
+
+      <div
+        style={{
+          position: "absolute",
+          bottom: 18,
+          left: 0,
+          right: 0,
+          textAlign: "center",
+          ...MONO,
+          fontSize: 9,
+          color: C.dim,
+          letterSpacing: "0.22em",
+          textTransform: "uppercase",
+        }}
+      >
+        Mujin v0.3.1 · Sui Mainnet
+      </div>
+    </div>
+  );
+}
+
 export default function MujinApp() {
   const [screen, setScreen] = useState("dashboard");
+  const [connected, setConnected] = useState(false);
   const [activeDuel, setActiveDuel] = useState(null);
   const [duelResult, setDuelResult] = useState(null);
   const [badges, setBadges] = useState(INITIAL_BADGES);
@@ -5840,66 +6004,95 @@ export default function MujinApp() {
         }
       `}</style>
 
-      <TopNav
-        screen={screen}
-        setScreen={setScreen}
-        badges={badges}
-        mujinTokens={mujinTokens}
-        raffleTickets={raffleTickets}
-        totalRaffleTickets={totalRaffleTickets}
-        raffleSeconds={raffleSeconds}
-        raffleDrawn={raffleDrawn}
-      />
-
-      <div
-        style={{
-          maxWidth: 1280,
-          margin: "0 auto",
-          minHeight: "calc(100vh - 64px)",
-          borderLeft: `1px solid ${C.border}`,
-          borderRight: `1px solid ${C.border}`,
-          position: "relative",
-        }}
-      >
-        {screen === "dashboard" && <Dashboard setScreen={setScreen} />}
-        {screen === "pool" && (
-          <PoolDetail
-            setScreen={setScreen}
-            activeDuel={activeDuel}
-            setActiveDuel={setActiveDuel}
-            poolTotal={poolTotal}
-            setPoolTotal={setPoolTotal}
-            addRaffleTickets={addRaffleTickets}
-          />
-        )}
-        {screen === "duel" && <DuelSetup setScreen={setScreen} setActiveDuel={setActiveDuel} />}
-        {screen === "duel-sent" && <DuelSent setScreen={setScreen} />}
-        {screen === "duel-play" && activeDuel && (
-          <DuelPlay duel={activeDuel} setScreen={setScreen} setDuelResult={setDuelResult} />
-        )}
-        {screen === "duel-result" && activeDuel && (
-          <DuelResult
-            duel={activeDuel}
-            duelResult={duelResult}
-            setScreen={setScreen}
-            finishDuel={finishDuel}
-            badges={badges}
-            awardBadge={awardBadge}
-            poolTotal={poolTotal}
-          />
-        )}
-        {screen === "create" && <CreatePool setScreen={setScreen} />}
-        {screen === "settings" && <Settings setScreen={setScreen} />}
-        {screen === "raffle-draw" && (
-          <RaffleDraw
+      {!connected ? (
+        <ConnectScreen
+          onConnect={() => {
+            setConnected(true);
+            setScreen("dashboard");
+          }}
+        />
+      ) : (
+        <>
+          <TopNav
+            screen={screen}
             setScreen={(s) => {
-              finishRaffle();
-              setScreen(s);
+              if (s === "disconnect") {
+                setConnected(false);
+                setScreen("dashboard");
+              } else {
+                setScreen(s);
+              }
             }}
-            totalTickets={totalRaffleTickets}
+            badges={badges}
+            mujinTokens={mujinTokens}
+            raffleTickets={raffleTickets}
+            totalRaffleTickets={totalRaffleTickets}
+            raffleSeconds={raffleSeconds}
+            raffleDrawn={raffleDrawn}
           />
-        )}
-      </div>
+
+          <div
+            style={{
+              maxWidth: 1280,
+              margin: "0 auto",
+              minHeight: "calc(100vh - 64px)",
+              borderLeft: `1px solid ${C.border}`,
+              borderRight: `1px solid ${C.border}`,
+              position: "relative",
+            }}
+          >
+            {screen === "dashboard" && <Dashboard setScreen={setScreen} />}
+            {screen === "pool" && (
+              <PoolDetail
+                setScreen={setScreen}
+                activeDuel={activeDuel}
+                setActiveDuel={setActiveDuel}
+                poolTotal={poolTotal}
+                setPoolTotal={setPoolTotal}
+                addRaffleTickets={addRaffleTickets}
+              />
+            )}
+            {screen === "duel" && <DuelSetup setScreen={setScreen} setActiveDuel={setActiveDuel} />}
+            {screen === "duel-sent" && <DuelSent setScreen={setScreen} />}
+            {screen === "duel-play" && activeDuel && (
+              <DuelPlay duel={activeDuel} setScreen={setScreen} setDuelResult={setDuelResult} />
+            )}
+            {screen === "duel-result" && activeDuel && (
+              <DuelResult
+                duel={activeDuel}
+                duelResult={duelResult}
+                setScreen={setScreen}
+                finishDuel={finishDuel}
+                badges={badges}
+                awardBadge={awardBadge}
+                poolTotal={poolTotal}
+              />
+            )}
+            {screen === "create" && <CreatePool setScreen={setScreen} />}
+            {screen === "settings" && (
+              <Settings
+                setScreen={(s) => {
+                  if (s === "disconnect") {
+                    setConnected(false);
+                    setScreen("dashboard");
+                  } else {
+                    setScreen(s);
+                  }
+                }}
+              />
+            )}
+            {screen === "raffle-draw" && (
+              <RaffleDraw
+                setScreen={(s) => {
+                  finishRaffle();
+                  setScreen(s);
+                }}
+                totalTickets={totalRaffleTickets}
+              />
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }
