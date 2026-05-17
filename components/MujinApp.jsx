@@ -3047,6 +3047,542 @@ function PoolSettings({
   );
 }
 
+// ─────────────────────────────────────────────────────────────
+// v2 Pool Detail — chunky display, pops of pink + yellow,
+// rounded everything, dark warm background, playful graphics.
+// Inspired by the MetaPastry brand direction.
+// ─────────────────────────────────────────────────────────────
+
+const V = {
+  bg: "#0B0500",
+  surface: "#1A0E08",
+  surfaceHi: "#241410",
+  cardLine: "rgba(251, 242, 228, 0.08)",
+  cardLineHi: "rgba(251, 242, 228, 0.2)",
+  text: "#FBF2E4",
+  muted: "#A48E80",
+  dim: "#705548",
+  pink: "#F829DC",
+  yellow: "#F4D35E",
+  pinkSoft: "rgba(248, 41, 220, 0.18)",
+  yellowSoft: "rgba(244, 211, 94, 0.18)",
+};
+const DISPLAY = { fontFamily: "'Poppins', system-ui, sans-serif", fontWeight: 900, letterSpacing: "-0.02em" };
+const BODY = { fontFamily: "'Inter', system-ui, sans-serif" };
+
+function V2Btn({ children, onClick, variant = "ghost", size = "md" }) {
+  const ref = useRef(null);
+  const [h, setH] = useState(false);
+  useEffect(() => {
+    if (!ref.current) return;
+    if (variant === "pink") {
+      ref.current.style.setProperty("background", V.pink, "important");
+      ref.current.style.setProperty("background-color", V.pink, "important");
+      ref.current.style.setProperty("color", "#0B0500", "important");
+    } else if (variant === "yellow") {
+      ref.current.style.setProperty("background", V.yellow, "important");
+      ref.current.style.setProperty("background-color", V.yellow, "important");
+      ref.current.style.setProperty("color", "#0B0500", "important");
+    } else if (variant === "gradient") {
+      ref.current.style.setProperty(
+        "background",
+        "linear-gradient(135deg, #F829DC 0%, #FF6B35 50%, #F4D35E 100%)",
+        "important"
+      );
+      ref.current.style.setProperty("color", "#0B0500", "important");
+    }
+  });
+  return (
+    <button
+      ref={ref}
+      onClick={onClick}
+      onMouseEnter={() => setH(true)}
+      onMouseLeave={() => setH(false)}
+      style={{
+        ...BODY,
+        padding: size === "lg" ? "14px 24px" : "10px 18px",
+        background: variant === "ghost" ? "transparent" : undefined,
+        color: variant === "ghost" ? V.text : undefined,
+        border: variant === "ghost" ? `1.5px solid ${V.cardLineHi}` : "1.5px solid transparent",
+        borderRadius: 999,
+        fontWeight: 600,
+        fontSize: size === "lg" ? 15 : 13,
+        cursor: "pointer",
+        transition: "all .15s",
+        opacity: h ? 0.92 : 1,
+        transform: h ? "translateY(-1px)" : "translateY(0)",
+        boxShadow:
+          variant === "pink"
+            ? "0 6px 20px rgba(248,41,220,0.3)"
+            : variant === "yellow"
+            ? "0 6px 20px rgba(244,211,94,0.3)"
+            : variant === "gradient"
+            ? "0 6px 24px rgba(248,41,220,0.3)"
+            : "none",
+        appearance: "none",
+        WebkitAppearance: "none",
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+function MetaPill({ label, value, color }) {
+  return (
+    <div
+      style={{
+        ...BODY,
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 8,
+        padding: "8px 14px",
+        background: V.surface,
+        border: `1px solid ${color ? color + "55" : V.cardLine}`,
+        borderRadius: 999,
+        fontSize: 12,
+      }}
+    >
+      <span style={{ color: V.muted, fontWeight: 500 }}>{label}</span>
+      <span style={{ color: color || V.text, fontWeight: 600 }}>{value}</span>
+    </div>
+  );
+}
+
+function V2Countdown() {
+  const [t, setT] = useState({ d: 3, h: 14, m: 22, s: 44 });
+  useEffect(() => {
+    const id = setInterval(() => {
+      setT((p) => {
+        let { d, h, m, s } = p;
+        s--;
+        if (s < 0) { s = 59; m--; }
+        if (m < 0) { m = 59; h--; }
+        if (h < 0) { h = 23; d--; }
+        return { d, h, m, s };
+      });
+    }, 1000);
+    return () => clearInterval(id);
+  }, []);
+  const pad = (n) => String(n).padStart(2, "0");
+  return (
+    <div style={{ display: "flex", gap: 8, alignItems: "baseline" }}>
+      {[
+        { v: t.d, u: "d" },
+        { v: t.h, u: "h" },
+        { v: t.m, u: "m" },
+        { v: t.s, u: "s" },
+      ].map((x, i) => (
+        <div key={i} style={{ display: "flex", alignItems: "baseline", gap: 2 }}>
+          <span style={{ ...DISPLAY, fontSize: 28, color: V.yellow, lineHeight: 1 }}>
+            {pad(x.v)}
+          </span>
+          <span style={{ ...BODY, fontSize: 12, color: V.muted, fontWeight: 500 }}>
+            {x.u}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function CoinsGraphic() {
+  return (
+    <svg viewBox="0 0 200 200" width="180" height="180" style={{ display: "block" }}>
+      <defs>
+        <linearGradient id="v2g-pink" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#F829DC" />
+          <stop offset="1" stopColor="#FF6B35" />
+        </linearGradient>
+        <linearGradient id="v2g-yellow" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#F4D35E" />
+          <stop offset="1" stopColor="#FF9A3D" />
+        </linearGradient>
+        <radialGradient id="v2glow" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0" stopColor="#F829DC" stopOpacity="0.4" />
+          <stop offset="1" stopColor="#F829DC" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      <ellipse cx="100" cy="120" rx="90" ry="90" fill="url(#v2glow)" />
+      {/* bottom coin */}
+      <ellipse cx="100" cy="158" rx="62" ry="16" fill="#0B0500" />
+      <ellipse cx="100" cy="150" rx="62" ry="16" fill="url(#v2g-pink)" stroke="#FBF2E4" strokeWidth="1.5" />
+      {/* middle coin */}
+      <ellipse cx="98" cy="120" rx="48" ry="12" fill="#0B0500" />
+      <ellipse cx="98" cy="113" rx="48" ry="12" fill="url(#v2g-yellow)" stroke="#FBF2E4" strokeWidth="1.5" />
+      {/* top coin */}
+      <ellipse cx="102" cy="85" rx="34" ry="9" fill="#0B0500" />
+      <ellipse cx="102" cy="79" rx="34" ry="9" fill="url(#v2g-pink)" stroke="#FBF2E4" strokeWidth="1.5" />
+      {/* SUI label on top coin */}
+      <text x="102" y="83" textAnchor="middle" fontFamily="Poppins, sans-serif" fontWeight="900" fontSize="9" fill="#0B0500">SUI</text>
+      {/* sparkles */}
+      <g fill="#F4D35E">
+        <path d="M 30 40 L 33 47 L 40 50 L 33 53 L 30 60 L 27 53 L 20 50 L 27 47 Z" />
+      </g>
+      <g fill="#F829DC">
+        <path d="M 170 50 L 172 54 L 176 56 L 172 58 L 170 62 L 168 58 L 164 56 L 168 54 Z" />
+      </g>
+      <circle cx="50" cy="80" r="3" fill="#FBF2E4" />
+      <circle cx="160" cy="100" r="2.5" fill="#F4D35E" />
+      <circle cx="40" cy="160" r="2" fill="#F829DC" />
+    </svg>
+  );
+}
+
+function V2ActivityRow({ avatar, name, time, action, amount, color, index }) {
+  return (
+    <div
+      className="mjn-fade-in"
+      style={{
+        animationDelay: `${0.06 * index}s`,
+        display: "flex",
+        alignItems: "center",
+        gap: 16,
+        padding: "16px 20px",
+        background: V.surface,
+        border: `1px solid ${V.cardLine}`,
+        borderRadius: 16,
+        marginBottom: 10,
+      }}
+    >
+      <div
+        style={{
+          width: 40,
+          height: 40,
+          background: color === "pink" ? V.pink : color === "yellow" ? V.yellow : V.surfaceHi,
+          color: color ? "#0B0500" : V.text,
+          borderRadius: 999,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          ...DISPLAY,
+          fontSize: 16,
+          flexShrink: 0,
+        }}
+      >
+        {avatar}
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ ...BODY, fontSize: 14, color: V.text, fontWeight: 600 }}>{name}</div>
+        <div style={{ ...BODY, fontSize: 12, color: V.muted, marginTop: 2 }}>{action} · {time}</div>
+      </div>
+      {amount && (
+        <div style={{ ...DISPLAY, fontSize: 18, color: color === "pink" ? V.pink : V.yellow }}>
+          {amount}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PoolDetailV2({ setScreen, activeDuel, setActiveDuel, poolTotal, setPoolTotal, addRaffleTickets }) {
+  const [tab, setTab] = useState("activity");
+  const [openDesc, setOpenDesc] = useState(false);
+  const target = 1200;
+  const pct = Math.round((poolTotal / target) * 100);
+
+  return (
+    <div style={{ minHeight: "100vh", background: V.bg, color: V.text, position: "relative", overflow: "hidden" }}>
+      {/* Background glows */}
+      <div style={{ position: "absolute", top: -200, right: -200, width: 600, height: 600, background: "radial-gradient(circle, rgba(248,41,220,0.15), transparent 60%)", borderRadius: "50%", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", bottom: -250, left: -150, width: 500, height: 500, background: "radial-gradient(circle, rgba(244,211,94,0.08), transparent 60%)", borderRadius: "50%", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", top: "30%", left: "10%", width: 300, height: 300, background: "radial-gradient(circle, rgba(255,107,53,0.06), transparent 70%)", borderRadius: "50%", pointerEvents: "none" }} />
+
+      <div style={{ position: "relative", maxWidth: 1100, margin: "0 auto", padding: "32px 28px 80px" }}>
+        {/* Top bar */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 40 }}>
+          <button
+            onClick={() => setScreen("dashboard")}
+            style={{
+              ...BODY,
+              background: "transparent",
+              border: "none",
+              color: V.muted,
+              cursor: "pointer",
+              fontSize: 14,
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              padding: 0,
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = V.text)}
+            onMouseLeave={(e) => (e.currentTarget.style.color = V.muted)}
+          >
+            ← pools
+          </button>
+          <div style={{ display: "flex", gap: 10 }}>
+            <V2Btn variant="ghost" onClick={() => setScreen("duel")}>
+              ⚔ start duel
+            </V2Btn>
+            <V2Btn variant="gradient">+ contribute</V2Btn>
+          </div>
+        </div>
+
+        {/* Hero title */}
+        <div style={{ marginBottom: 36 }}>
+          <div
+            style={{
+              ...BODY,
+              fontSize: 11,
+              color: V.pink,
+              letterSpacing: "0.2em",
+              textTransform: "uppercase",
+              marginBottom: 14,
+              fontWeight: 600,
+            }}
+          >
+            ◆ active pool · public
+          </div>
+          <h1
+            style={{
+              ...DISPLAY,
+              fontSize: 88,
+              margin: 0,
+              lineHeight: 0.92,
+            }}
+          >
+            <span style={{ color: V.text }}>summer</span>
+            <br />
+            <span style={{ color: "transparent", WebkitTextStroke: `2px ${V.pink}` }}>trip</span>{" "}
+            <span style={{ color: V.yellow }}>'26</span>
+          </h1>
+        </div>
+
+        {/* Stats card */}
+        <div
+          style={{
+            background: V.surface,
+            borderRadius: 28,
+            padding: 36,
+            marginBottom: 24,
+            position: "relative",
+            overflow: "hidden",
+            border: `1px solid ${V.cardLine}`,
+          }}
+        >
+          <div style={{ position: "absolute", top: 0, right: 0, bottom: 0, width: 280, display: "flex", alignItems: "center", justifyContent: "center", opacity: 0.95, pointerEvents: "none" }}>
+            <CoinsGraphic />
+          </div>
+
+          <div style={{ position: "relative", display: "grid", gridTemplateColumns: "1fr 240px", gap: 36, alignItems: "flex-start" }}>
+            <div>
+              <div style={{ ...BODY, fontSize: 12, color: V.muted, marginBottom: 12, letterSpacing: "0.05em", fontWeight: 500 }}>
+                total pooled
+              </div>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
+                <span style={{ ...DISPLAY, fontSize: 96, color: V.yellow, lineHeight: 1 }}>
+                  {poolTotal}
+                </span>
+                <span style={{ ...DISPLAY, fontSize: 24, color: V.pink, lineHeight: 1 }}>
+                  SUI
+                </span>
+              </div>
+              <div style={{ ...BODY, fontSize: 13, color: V.muted, marginTop: 10 }}>
+                target {target.toLocaleString()} SUI · <span style={{ color: V.text, fontWeight: 600 }}>{pct}% complete</span>
+              </div>
+              <div style={{ height: 10, background: V.surfaceHi, borderRadius: 999, overflow: "hidden", marginTop: 18, maxWidth: 480 }}>
+                <div
+                  style={{
+                    height: "100%",
+                    width: `${pct}%`,
+                    background: `linear-gradient(90deg, ${V.pink} 0%, #FF6B35 50%, ${V.yellow} 100%)`,
+                    borderRadius: 999,
+                    boxShadow: `0 0 24px rgba(248,41,220,0.5)`,
+                  }}
+                />
+              </div>
+            </div>
+            <div style={{ alignSelf: "flex-start" }}>
+              <div style={{ ...BODY, fontSize: 11, color: V.muted, marginBottom: 14, letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 600 }}>
+                time left
+              </div>
+              <V2Countdown />
+            </div>
+          </div>
+        </div>
+
+        {/* Meta pills */}
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 28 }}>
+          <MetaPill label="destination" value="save the children" color={V.pink} />
+          <MetaPill label="wallet" value="0x9c3A…b4f1" />
+          <MetaPill label="members" value="3 active" />
+          <MetaPill label="deadline" value="14 May 2026" color={V.yellow} />
+          <MetaPill label="duels" value="enabled" />
+        </div>
+
+        {/* Description (toggleable) */}
+        <div
+          style={{
+            background: V.surface,
+            border: `1px solid ${V.cardLine}`,
+            borderRadius: 20,
+            padding: openDesc ? "20px 24px 22px" : "20px 24px",
+            marginBottom: 36,
+            transition: "all .25s",
+          }}
+        >
+          <button
+            onClick={() => setOpenDesc(!openDesc)}
+            style={{
+              ...BODY,
+              width: "100%",
+              background: "transparent",
+              border: "none",
+              color: V.text,
+              padding: 0,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              fontSize: 15,
+              fontWeight: 600,
+              textAlign: "left",
+            }}
+          >
+            <span>about this pool</span>
+            <span
+              style={{
+                ...DISPLAY,
+                fontSize: 20,
+                color: V.pink,
+                transform: openDesc ? "rotate(45deg)" : "rotate(0)",
+                transition: "transform .2s",
+                lineHeight: 1,
+              }}
+            >
+              +
+            </span>
+          </button>
+          <div
+            style={{
+              ...BODY,
+              fontSize: 14,
+              color: V.muted,
+              lineHeight: 1.6,
+              maxHeight: openDesc ? 200 : 0,
+              overflow: "hidden",
+              marginTop: openDesc ? 14 : 0,
+              transition: "all .25s",
+            }}
+          >
+            Group savings pool for our annual summer trip. Contribute when you can, and use higher-or-lower duels to wager fun amounts among members. Funds release on deadline to the Save the Children wallet.
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div style={{ display: "flex", gap: 32, marginBottom: 24, borderBottom: `1px solid ${V.cardLine}` }}>
+          {[
+            ["activity", "activity"],
+            ["contributions", "who's chipped in"],
+            ["members", "members"],
+          ].map(([id, label]) => {
+            const active = tab === id;
+            return (
+              <button
+                key={id}
+                onClick={() => setTab(id)}
+                style={{
+                  ...DISPLAY,
+                  background: "transparent",
+                  border: "none",
+                  color: active ? V.text : V.muted,
+                  fontSize: 20,
+                  textTransform: "lowercase",
+                  paddingBottom: 14,
+                  cursor: "pointer",
+                  borderBottom: `3px solid ${active ? V.pink : "transparent"}`,
+                  transition: "all .15s",
+                  fontWeight: 800,
+                }}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Tab content */}
+        <div key={tab} className="mjn-fade-in">
+          {tab === "activity" && (
+            <div>
+              <V2ActivityRow index={0} avatar="A" color="pink" name="alex" time="2 days ago" action="won higher or lower duel" amount="+150 SUI" />
+              <V2ActivityRow index={1} avatar="M" color="yellow" name="maya" time="5h ago" action="added to the pool" amount="+50 SUI" />
+              <V2ActivityRow index={2} avatar="Y" name="you" time="2d ago" action="created the pool" />
+            </div>
+          )}
+          {tab === "contributions" && (
+            <div style={{ background: V.surface, borderRadius: 20, padding: 28, border: `1px solid ${V.cardLine}` }}>
+              <div style={{ ...DISPLAY, fontSize: 24, marginBottom: 6 }}>who's chipped in</div>
+              <div style={{ ...BODY, fontSize: 13, color: V.muted, marginBottom: 24 }}>a clean split of who has added SUI to this pool.</div>
+              {[
+                { name: "you", wallet: "0x89A…4fE1", amount: 180, pct: 40, color: V.pink },
+                { name: "alex", wallet: "0x12B…7cC2", amount: 144, pct: 32, color: V.yellow },
+                { name: "jordan", wallet: "0x88C…9dA3", amount: 126, pct: 28, color: "rgba(248,41,220,0.6)" },
+              ].map((c, i) => (
+                <div key={c.name} style={{ marginBottom: 18 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
+                    <span style={{ ...BODY, fontSize: 15, color: V.text, fontWeight: 600 }}>
+                      {c.name} <span style={{ color: V.muted, fontSize: 12, fontWeight: 500, marginLeft: 8 }}>{c.wallet}</span>
+                    </span>
+                    <span style={{ ...DISPLAY, fontSize: 18, color: c.color }}>
+                      {c.amount} <span style={{ ...BODY, fontSize: 11, color: V.muted, fontWeight: 500 }}>SUI · {c.pct}%</span>
+                    </span>
+                  </div>
+                  <div style={{ height: 8, background: V.surfaceHi, borderRadius: 999, overflow: "hidden" }}>
+                    <div style={{ height: "100%", width: `${c.pct}%`, background: c.color, borderRadius: 999, boxShadow: `0 0 12px ${c.color}80` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+          {tab === "members" && (
+            <div>
+              {[
+                { name: "you", tag: "owner", wallet: "0x89A…4fE1", amount: 180, color: V.pink },
+                { name: "alex", wallet: "0x12B…7cC2", amount: 144, color: V.yellow },
+                { name: "jordan", wallet: "0x88C…9dA3", amount: 126 },
+              ].map((m, i) => (
+                <div key={m.name} className="mjn-fade-in" style={{
+                  animationDelay: `${0.06 * i}s`,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 16,
+                  padding: "18px 22px",
+                  background: V.surface,
+                  border: `1px solid ${V.cardLine}`,
+                  borderRadius: 16,
+                  marginBottom: 10,
+                }}>
+                  <div style={{
+                    width: 44, height: 44,
+                    background: m.color || V.surfaceHi,
+                    color: m.color ? "#0B0500" : V.text,
+                    borderRadius: 999,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    ...DISPLAY, fontSize: 18, flexShrink: 0,
+                  }}>
+                    {m.name[0]}
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                      <span style={{ ...BODY, fontSize: 15, fontWeight: 600 }}>{m.name}</span>
+                      {m.tag && <span style={{ ...BODY, fontSize: 10, padding: "3px 10px", background: V.pinkSoft, color: V.pink, borderRadius: 999, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase" }}>{m.tag}</span>}
+                    </div>
+                    <div style={{ ...BODY, fontSize: 12, color: V.muted, marginTop: 4 }}>{m.wallet}</div>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ ...DISPLAY, fontSize: 22, color: V.text }}>{m.amount}</div>
+                    <div style={{ ...BODY, fontSize: 11, color: V.muted, marginTop: 2 }}>SUI contributed</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 function PoolDetail({ setScreen, activeDuel, setActiveDuel, poolTotal, setPoolTotal, addRaffleTickets }) {
   const [tab, setTab] = useState("activity");
   const [openDesc, setOpenDesc] = useState(false);
@@ -6514,7 +7050,7 @@ export default function MujinApp() {
           >
             {screen === "dashboard" && <Dashboard setScreen={setScreen} />}
             {screen === "pool" && (
-              <PoolDetail
+              <PoolDetailV2
                 setScreen={setScreen}
                 activeDuel={activeDuel}
                 setActiveDuel={setActiveDuel}
