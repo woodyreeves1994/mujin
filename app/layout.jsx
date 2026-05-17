@@ -1,6 +1,6 @@
 export const metadata = {
-  title: "Mujin — Save together on Sui",
-  description: "Group savings pools with duels and a monthly raffle, built on Sui.",
+  title: "Mujin v2 — design preview",
+  description: "Experimental design playground for Mujin (v2-design branch).",
 };
 
 export default function RootLayout({ children }) {
@@ -15,7 +15,27 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body style={{ margin: 0, padding: 0, background: "#131211", color: "#ecebe7" }}>
-        {children}
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 1000,
+            padding: "6px 12px",
+            background: "rgba(255,120,73,0.15)",
+            borderBottom: "1px solid rgba(255,120,73,0.4)",
+            textAlign: "center",
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: 10,
+            color: "#ff7849",
+            letterSpacing: "0.2em",
+            textTransform: "uppercase",
+          }}
+        >
+          ◆ v2 design preview · this is the experimental branch
+        </div>
+        <div style={{ paddingTop: 28 }}>{children}</div>
       </body>
     </html>
   );
