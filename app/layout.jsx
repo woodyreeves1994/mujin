@@ -10,11 +10,11 @@ export default function RootLayout({ children }) {
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Poppins:wght@600;800;900&family=Inter:wght@400;500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body style={{ margin: 0, padding: 0, background: "#131211", color: "#ecebe7" }}>
+      <body style={{ margin: 0, padding: 0, background: "#F5F2EA", color: "#0F0F0F" }}>
         <div
           style={{
             position: "fixed",
@@ -22,20 +22,20 @@ export default function RootLayout({ children }) {
             left: 0,
             right: 0,
             zIndex: 1000,
-            padding: "6px 12px",
-            background: "rgba(255,120,73,0.15)",
-            borderBottom: "1px solid rgba(255,120,73,0.4)",
+            padding: "5px 12px",
+            background: "#FF4D6D",
             textAlign: "center",
-            fontFamily: "'JetBrains Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
             fontSize: 10,
-            color: "#ff7849",
-            letterSpacing: "0.2em",
+            color: "#0F0F0F",
+            fontWeight: 800,
+            letterSpacing: "0.22em",
             textTransform: "uppercase",
           }}
         >
-          ◆ v2 design preview · this is the experimental branch
+          ◆ v2 design preview · experimental branch
         </div>
-        <div style={{ paddingTop: 28 }}>{children}</div>
+        <div style={{ paddingTop: 26 }}>{children}</div>
       </body>
     </html>
   );
