@@ -2599,21 +2599,475 @@ function SuccessToast({ amount, onClose }) {
   );
 }
 
+function Toggle({ value, onChange }) {
+  return (
+    <button
+      onClick={() => onChange(!value)}
+      style={{
+        width: 48,
+        height: 26,
+        background: value ? C.warn : C.faint,
+        border: `1px solid ${value ? C.warn : C.borderHi}`,
+        borderRadius: 999,
+        position: "relative",
+        cursor: "pointer",
+        padding: 0,
+        transition: "all .2s",
+        flexShrink: 0,
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          top: 2,
+          left: value ? 24 : 2,
+          width: 18,
+          height: 18,
+          background: value ? "#131211" : C.text,
+          borderRadius: 999,
+          transition: "all .2s cubic-bezier(.2,.7,.2,1)",
+          boxShadow: value ? "0 0 8px rgba(247,224,138,0.5)" : "none",
+        }}
+      />
+    </button>
+  );
+}
+
+function DangerBtn({ children, onClick, primary }) {
+  const ref = useRef(null);
+  const [h, setH] = useState(false);
+  useEffect(() => {
+    if (!ref.current || !primary) return;
+    ref.current.style.setProperty("background", "#ff6b6b", "important");
+    ref.current.style.setProperty("background-color", "#ff6b6b", "important");
+    ref.current.style.setProperty("color", "#131211", "important");
+    ref.current.style.setProperty("border-color", "#ff6b6b", "important");
+  });
+  if (primary) {
+    return (
+      <button
+        ref={ref}
+        onClick={onClick}
+        onMouseEnter={() => setH(true)}
+        onMouseLeave={() => setH(false)}
+        style={{
+          ...MONO,
+          padding: "10px 18px",
+          borderStyle: "solid",
+          borderWidth: 1,
+          borderRadius: 0,
+          fontSize: 11,
+          letterSpacing: "0.16em",
+          textTransform: "uppercase",
+          cursor: "pointer",
+          fontWeight: 600,
+          opacity: h ? 0.9 : 1,
+          transition: "opacity .15s",
+          boxShadow: "0 0 18px rgba(255,107,107,0.25)",
+        }}
+      >
+        {children}
+      </button>
+    );
+  }
+  return (
+    <button
+      onClick={onClick}
+      onMouseEnter={() => setH(true)}
+      onMouseLeave={() => setH(false)}
+      style={{
+        ...MONO,
+        padding: "10px 18px",
+        background: h ? "rgba(255,107,107,0.12)" : "rgba(255,107,107,0.05)",
+        color: "#ff6b6b",
+        border: `1px solid ${h ? "#ff6b6b" : "rgba(255,107,107,0.4)"}`,
+        fontSize: 11,
+        letterSpacing: "0.16em",
+        textTransform: "uppercase",
+        cursor: "pointer",
+        transition: "all .15s",
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+function SettingsCard({ title, subtitle, danger, children, headerRight }) {
+  return (
+    <div
+      className="mjn-fade-in"
+      style={{
+        background: danger ? "rgba(255,107,107,0.04)" : C.panel,
+        border: `1px solid ${danger ? "rgba(255,107,107,0.25)" : C.border}`,
+        padding: 24,
+        marginBottom: 16,
+      }}
+    >
+      {(title || headerRight) && (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            marginBottom: subtitle || children ? 18 : 0,
+            gap: 16,
+          }}
+        >
+          <div style={{ flex: 1 }}>
+            {title && (
+              <h3
+                style={{
+                  ...MONO,
+                  fontSize: 15,
+                  fontWeight: 500,
+                  color: danger ? "#ff6b6b" : C.text,
+                  margin: 0,
+                  letterSpacing: "0.04em",
+                }}
+              >
+                {title}
+              </h3>
+            )}
+            {subtitle && (
+              <div
+                style={{
+                  ...MONO,
+                  fontSize: 11,
+                  color: C.muted,
+                  marginTop: 6,
+                  letterSpacing: "0.02em",
+                  lineHeight: 1.55,
+                }}
+              >
+                {subtitle}
+              </div>
+            )}
+          </div>
+          {headerRight}
+        </div>
+      )}
+      {children}
+    </div>
+  );
+}
+
+function CloseConfirmModal({ onCancel, onConfirm }) {
+  const [method, setMethod] = useState("transfer");
+  return (
+    <div
+      onClick={onCancel}
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(5,4,3,0.78)",
+        backdropFilter: "blur(8px)",
+        zIndex: 100,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 24,
+      }}
+      className="mjn-fade-in"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="mjn-fade-in"
+        style={{
+          background: C.bg,
+          border: `1px solid rgba(255,107,107,0.4)`,
+          padding: 32,
+          maxWidth: 480,
+          width: "100%",
+          position: "relative",
+          boxShadow: "0 0 60px rgba(255,107,107,0.15)",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 1,
+            background: "linear-gradient(90deg, transparent, #ff6b6b, transparent)",
+            opacity: 0.7,
+          }}
+        />
+        <h2
+          style={{
+            ...MONO,
+            fontSize: 20,
+            fontWeight: 500,
+            color: C.text,
+            margin: "0 0 12px",
+            letterSpacing: "0.02em",
+            lineHeight: 1.35,
+          }}
+        >
+          Are you sure you want to close the pool?
+        </h2>
+        <div
+          style={{
+            ...MONO,
+            fontSize: 12,
+            color: C.muted,
+            marginBottom: 22,
+            letterSpacing: "0.02em",
+            lineHeight: 1.6,
+          }}
+        >
+          Closing this pool permanently stops contributions and duels. This cannot be undone.
+        </div>
+
+        <CloseRadioCard
+          selected={method === "transfer"}
+          title="Transfer funds to withdrawal wallet"
+          description="Send the pooled SUI to the current payout wallet and close the pool."
+          onClick={() => setMethod("transfer")}
+        />
+        <CloseRadioCard
+          selected={method === "refund"}
+          title="Refund all members"
+          description="Return contributions to members based on their recorded pool contributions."
+          onClick={() => setMethod("refund")}
+        />
+
+        <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 24 }}>
+          <Btn onClick={onCancel}>Cancel</Btn>
+          <DangerBtn primary onClick={() => onConfirm(method)}>
+            {method === "transfer" ? "Transfer and close" : "Refund and close"}
+          </DangerBtn>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CloseRadioCard({ selected, title, description, onClick }) {
+  const [h, setH] = useState(false);
+  return (
+    <div
+      onClick={onClick}
+      onMouseEnter={() => setH(true)}
+      onMouseLeave={() => setH(false)}
+      style={{
+        padding: "14px 16px",
+        border: `1px solid ${selected ? "rgba(255,107,107,0.5)" : h ? C.borderHi : C.border}`,
+        background: selected ? "rgba(255,107,107,0.07)" : h ? C.panelHi : C.panel,
+        cursor: "pointer",
+        transition: "all .15s",
+        display: "flex",
+        gap: 12,
+        alignItems: "flex-start",
+        marginBottom: 8,
+      }}
+    >
+      <span
+        style={{
+          width: 14,
+          height: 14,
+          border: `1px solid ${selected ? "#ff6b6b" : C.borderHi}`,
+          borderRadius: 999,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+          marginTop: 2,
+          transition: "all .15s",
+        }}
+      >
+        {selected && (
+          <span
+            style={{
+              width: 7,
+              height: 7,
+              background: "#ff6b6b",
+              borderRadius: 999,
+              boxShadow: "0 0 6px #ff6b6b",
+            }}
+          />
+        )}
+      </span>
+      <div style={{ flex: 1 }}>
+        <div style={{ ...MONO, fontSize: 13, fontWeight: 500, color: C.text, letterSpacing: "0.02em", marginBottom: 4 }}>
+          {title}
+        </div>
+        <div style={{ ...MONO, fontSize: 11, color: C.muted, lineHeight: 1.55, letterSpacing: "0.02em" }}>
+          {description}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PoolSettings({
+  poolTitle,
+  poolDescription,
+  poolDuelsEnabled,
+  poolTargetValue,
+  onSavePool,
+  onToggleDuels,
+  onUpdateTarget,
+  onClosePool,
+}) {
+  const [title, setTitle] = useState(poolTitle);
+  const [description, setDescription] = useState(poolDescription);
+  const [target, setTarget] = useState(String(poolTargetValue));
+  const [savedAt, setSavedAt] = useState(null);
+  const [targetSavedAt, setTargetSavedAt] = useState(null);
+  const [showCloseModal, setShowCloseModal] = useState(false);
+
+  const dirty = title !== poolTitle || description !== poolDescription;
+  const targetDirty = parseFloat(target) !== poolTargetValue;
+
+  const save = () => {
+    onSavePool({ title, description });
+    setSavedAt(Date.now());
+    setTimeout(() => setSavedAt(null), 2200);
+  };
+
+  const updateTarget = () => {
+    const v = parseFloat(target);
+    if (isNaN(v) || v <= 0) return;
+    onUpdateTarget(v);
+    setTargetSavedAt(Date.now());
+    setTimeout(() => setTargetSavedAt(null), 2200);
+  };
+
+  return (
+    <div className="mjn-fade-in">
+      <div style={{ marginBottom: 24 }}>
+        <h2
+          style={{
+            ...MONO,
+            fontSize: 20,
+            fontWeight: 500,
+            color: C.text,
+            margin: 0,
+            letterSpacing: "0.02em",
+          }}
+        >
+          Pool settings
+        </h2>
+        <div
+          style={{
+            ...MONO,
+            fontSize: 12,
+            color: C.muted,
+            marginTop: 6,
+            letterSpacing: "0.02em",
+          }}
+        >
+          Adjust how this pool works for members.
+        </div>
+      </div>
+
+      <SettingsCard
+        title="Pool title and description"
+        subtitle="Update the name and description members see on this pool."
+      >
+        <FieldGroup label="Pool title">
+          <TextInput value={title} onChange={setTitle} />
+        </FieldGroup>
+        <FieldGroup label="Description">
+          <TextArea value={description} onChange={setDescription} placeholder="What's this pool for?" />
+        </FieldGroup>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginTop: 8,
+          }}
+        >
+          <span
+            style={{
+              ...MONO,
+              fontSize: 11,
+              color: savedAt ? C.good : C.muted,
+              letterSpacing: "0.02em",
+              transition: "color .15s",
+            }}
+          >
+            {savedAt ? "✓ Changes saved" : "Save your changes before leaving settings."}
+          </span>
+          <Btn primary onClick={save}>Save changes</Btn>
+        </div>
+      </SettingsCard>
+
+      <SettingsCard
+        title="Duels"
+        subtitle="Allow members to start contribution duels in this pool."
+        headerRight={<Toggle value={poolDuelsEnabled} onChange={onToggleDuels} />}
+      />
+
+      <SettingsCard
+        title="Target amount"
+        subtitle="Increase the target pool amount for this pool."
+      >
+        <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+          <div style={{ flex: 1 }}>
+            <TextInput value={target} onChange={setTarget} suffix="SUI" type="number" />
+          </div>
+          <Btn primary onClick={updateTarget}>Update target</Btn>
+        </div>
+        <div
+          style={{
+            ...MONO,
+            fontSize: 11,
+            color: targetSavedAt ? C.good : C.muted,
+            letterSpacing: "0.04em",
+            transition: "color .15s",
+          }}
+        >
+          {targetSavedAt
+            ? "✓ Target updated"
+            : `Current target: ${poolTargetValue.toLocaleString()} SUI`}
+        </div>
+      </SettingsCard>
+
+      <SettingsCard
+        danger
+        title="Close pool"
+        subtitle="Permanently close this pool. Choose how funds are handled in the confirmation step."
+        headerRight={<DangerBtn onClick={() => setShowCloseModal(true)}>Close pool</DangerBtn>}
+      />
+
+      {showCloseModal && (
+        <CloseConfirmModal
+          onCancel={() => setShowCloseModal(false)}
+          onConfirm={(method) => {
+            setShowCloseModal(false);
+            onClosePool(method);
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
 function PoolDetail({ setScreen, activeDuel, setActiveDuel, poolTotal, setPoolTotal, addRaffleTickets }) {
   const [tab, setTab] = useState("activity");
   const [openDesc, setOpenDesc] = useState(false);
   const [range, setRange] = useState("30d");
   const [contributing, setContributing] = useState(false);
   const [successAmt, setSuccessAmt] = useState(null);
-  const target = 1200;
+  const [poolTitle, setPoolTitle] = useState("Summer trip '26");
+  const [poolDescription, setPoolDescription] = useState(
+    "Group savings pool for our annual summer trip. Contribute when you can, and use higher_or_lower duels to wager fun amounts among members. Funds release on deadline to the save_the_children wallet."
+  );
+  const [poolDuelsEnabled, setPoolDuelsEnabled] = useState(true);
+  const [poolTargetValue, setPoolTargetValue] = useState(1200);
+  const target = poolTargetValue;
   const remaining = Math.max(1, target - poolTotal);
   const pct = ((poolTotal / target) * 100).toFixed(1);
 
   return (
     <>
       <PageHeader
-        title="Summer trip '26"
-        breadcrumbs="Pools / Summer trip '26"
+        title={poolTitle}
+        breadcrumbs={`Pools / ${poolTitle}`}
         range={range}
         setRange={setRange}
       >
@@ -2715,7 +3169,7 @@ function PoolDetail({ setScreen, activeDuel, setActiveDuel, poolTotal, setPoolTo
               transition: "all .25s ease",
             }}
           >
-            Group savings pool for our annual summer trip. Contribute when you can, and use higher_or_lower duels to wager fun amounts among members. Funds release on deadline to the save_the_children wallet.
+            {poolDescription}
           </div>
         </div>
 
@@ -2755,7 +3209,7 @@ function PoolDetail({ setScreen, activeDuel, setActiveDuel, poolTotal, setPoolTo
               </button>
             ))}
           </div>
-          <Btn>Settings</Btn>
+          <Btn primary={tab === "settings"} onClick={() => setTab("settings")}>Settings</Btn>
         </div>
 
         <div key={tab} className="mjn-fade-in">
@@ -2807,6 +3261,23 @@ function PoolDetail({ setScreen, activeDuel, setActiveDuel, poolTotal, setPoolTo
           )}
           {tab === "contributions" && <ContributionsPanel />}
           {tab === "members" && <MembersPanel />}
+          {tab === "settings" && (
+            <PoolSettings
+              poolTitle={poolTitle}
+              poolDescription={poolDescription}
+              poolDuelsEnabled={poolDuelsEnabled}
+              poolTargetValue={poolTargetValue}
+              onSavePool={({ title, description }) => {
+                setPoolTitle(title);
+                setPoolDescription(description);
+              }}
+              onToggleDuels={setPoolDuelsEnabled}
+              onUpdateTarget={setPoolTargetValue}
+              onClosePool={() => {
+                setScreen("dashboard");
+              }}
+            />
+          )}
         </div>
       </div>
     </>
